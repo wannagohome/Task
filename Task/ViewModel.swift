@@ -46,18 +46,24 @@ class ViewModel {
     func loadFirstPage(_ quarry: String) {
         guard !quarry.isEmpty else { return }
         self.quarry = quarry
-        pageCount = 2
+        pageCount = 1
         isNextPageExist = true
         
         var result: [User] = []
         AF.request("https://api.github.com/search/users?q=\(quarry)", method: .get, encoding: JSONEncoding.default).responseJSON {
             (responds) in
+            let pageStatus: String =  responds.response?.allHeaderFields["Link"] as! String
+            if !pageStatus.contains("\"next\"") { self.isNextPageExist = false }
+            
             switch responds.result {
                 
             case .success(let value):
                 result = self.parse(json: value)
                 self.user = result
-                self.user.append(User(true))
+                if self.isNextPageExist {
+                    self.user.append(User(true))
+                }
+                
                 
             case .failure(let error):
                 print(error.localizedDescription)
@@ -70,17 +76,23 @@ class ViewModel {
     func loadNextPage(_ pageNumber : String) {
         guard !pageNumber.isEmpty, isNextPageExist else { return }
         
+        pageCount += 1
+        
         var result: [User] = []
         AF.request("https://api.github.com/search/users?q=\(quarry)&page=\(pageCount)", method: .get, encoding: JSONEncoding.default).responseJSON {
             (responds) in
             let pageStatus: String =  responds.response?.allHeaderFields["Link"] as! String
-            if pageStatus.contains("\"next\"") { self.isNextPageExist = false }
+            if !pageStatus.contains("\"next\"") { self.isNextPageExist = false }
             
             switch responds.result {
         
             case .success(let value):
                 result = self.parse(json: value)
+                self.user.remove(at: self.user.count - 1)
                 self.user.append(contentsOf: result)
+                if self.isNextPageExist {
+                    self.user.append(User(true))
+                }
                 
             case .failure(let error):
                 print(error.localizedDescription)

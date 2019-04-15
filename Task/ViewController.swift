@@ -47,6 +47,7 @@ class ViewController: UIViewController, UITableViewDelegate {
                 let indexPath = IndexPath(row: index, section: 0)
                 if userInfo.isLoadingCell {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "footer", for: indexPath) as! LoadingCell
+                    cell.indicatorView.startAnimating()
                     return cell
                 }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! UserCell
