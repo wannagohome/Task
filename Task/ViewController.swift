@@ -108,6 +108,8 @@ class ViewController: UIViewController, UITableViewDelegate {
 class UserCell: UITableViewCell {
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 25
         return imageView
     }()
     let userNameLabel: UILabel = {
