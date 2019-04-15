@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct Item : Codable {
+struct User : Codable {
 
     let avatarUrl : String?
     let followersUrl : String?

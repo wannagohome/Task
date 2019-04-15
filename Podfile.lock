@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.0.0-beta.4)
+  - Alamofire (5.0.0-beta.5)
   - BaseAPI (0.1.5)
   - GithubAPI (0.0.6):
     - BaseAPI
@@ -7,7 +7,7 @@ PODS:
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.5.0)
-  - SwiftyJSON (4.2.0)
+  - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0.0-beta.2)
@@ -28,13 +28,13 @@ SPEC REPOS:
     - SwiftyJSON
 
 SPEC CHECKSUMS:
-  Alamofire: 6458d95477bc40adf10129f22c67cfb014162dc8
+  Alamofire: 9afb08f7f43efcc71c072374e720fcf67521317d
   BaseAPI: 9248feed65933cd20283514e7a9917ecba1b69c0
   GithubAPI: bc5bfd90489f5138a8d1e00003b18abe31579eb0
   Kingfisher: d9e7e0b209b59b8f9873aa2f37654e81a7beea51
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
 PODFILE CHECKSUM: 8cc65728a2f20ab1316af98a888c29202fad4e9c
 
