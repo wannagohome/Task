@@ -6,19 +6,21 @@ import Foundation
 
 struct User : Codable {
 
-    let avatarUrl : String?
-    let followersUrl : String?
-    let gravatarId : String?
-    let htmlUrl : String?
-    let id : Int?
-    let login : String?
-    let organizationsUrl : String?
-    let receivedEventsUrl : String?
-    let reposUrl : String?
-    let score : Double?
-    let subscriptionsUrl : String?
-    let type : String?
-    let url : String?
+    var avatarUrl : String?
+    var followersUrl : String?
+    var gravatarId : String?
+    var htmlUrl : String?
+    var id : Int?
+    var login : String?
+    var organizationsUrl : String?
+    var receivedEventsUrl : String?
+    var reposUrl : String?
+    var score : Double?
+    var subscriptionsUrl : String?
+    var type : String?
+    var url : String?
+    var isExpanded: Bool = false
+    var isLoadingCell: Bool = false
 
 
 	enum CodingKeys: String, CodingKey {
@@ -36,6 +38,11 @@ struct User : Codable {
 		case type = "type"
 		case url = "url"
 	}
+    
+    init(_ isLoadingCell: Bool) {
+        self.isLoadingCell = isLoadingCell
+    }
+    
 	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
 		avatarUrl = try values.decodeIfPresent(String.self, forKey: .avatarUrl)

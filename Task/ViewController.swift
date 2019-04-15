@@ -45,9 +45,15 @@ class ViewController: UIViewController, UITableViewDelegate {
         viewModel.loaded.asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items) { (tableView, index, userInfo) -> UITableViewCell in
                 let indexPath = IndexPath(row: index, section: 0)
+                if userInfo.isLoadingCell {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "footer", for: indexPath) as! LoadingCell
+                    return cell
+                }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! UserCell
                 cell.user = userInfo
                 return cell
+                
+                
         }
         .disposed(by: disposeBag)
         
@@ -59,7 +65,7 @@ class ViewController: UIViewController, UITableViewDelegate {
 
         
         tableView.register(UserCell.self, forCellReuseIdentifier: "Cell")
-    
+        tableView.register(LoadingCell.self, forCellReuseIdentifier: "footer")
         
         tableView.rx.contentOffset
             .filter{ point in self.tableView.isNearBottomEdge(edgeOffset: 20.0) && !self.isNextPageLoading }
@@ -68,31 +74,13 @@ class ViewController: UIViewController, UITableViewDelegate {
             .bind(to: viewModel.loadNextPageTrigger)
             .disposed(by: disposeBag)
 
-        
-        
-        
-        
-        viewModel.loadNextPageTrigger
-            .subscribe{
-
-                print($0)
-        }
-        .disposed(by: disposeBag)
-        
-        viewModel.searchText
-            .subscribe{
-                print($0)
-        }
-        .disposed(by: disposeBag)
-      
-        
-
     }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
+    
+   
     
     func configureSearchController() {
         searchController.obscuresBackgroundDuringPresentation = false
@@ -100,9 +88,28 @@ class ViewController: UIViewController, UITableViewDelegate {
         searchBar.placeholder = "검색할 ID"
         tableView.tableHeaderView = searchController.searchBar
         definesPresentationContext = true
+        
     }
     
     
+}
+
+class LoadingCell: UITableViewCell {
+    let indicatorView = UIActivityIndicatorView(style: .gray)
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        addSubview(indicatorView)
+        indicatorView.translatesAutoresizingMaskIntoConstraints = false
+        indicatorView.startAnimating()
+        indicatorView.center = contentView.center
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class UserCell: UITableViewCell {
@@ -119,7 +126,6 @@ class UserCell: UITableViewCell {
     }()
     let scoreLabel: UILabel = {
         let label = UILabel()
-        label.text = "score: "
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor.gray
         return label
@@ -128,7 +134,7 @@ class UserCell: UITableViewCell {
     var user: User? {
         didSet {
             userNameLabel.text = user?.login
-            scoreLabel.text!.append(String(format: "%.5f", (user?.score) ?? 0.0))
+            scoreLabel.text = "score: \((user?.score) ?? 0.0)"
             
             
             profileImageView.kf.setImage(with: URL(string: (user?.avatarUrl)!))

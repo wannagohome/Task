@@ -57,13 +57,13 @@ class ViewModel {
             case .success(let value):
                 result = self.parse(json: value)
                 self.user = result
+                self.user.append(User(true))
                 
             case .failure(let error):
                 print(error.localizedDescription)
                 
             }
         }
-        return
     }
     
     
@@ -87,7 +87,6 @@ class ViewModel {
                 
             }
         }
-        return
     }
     
     
