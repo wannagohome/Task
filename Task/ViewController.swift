@@ -10,6 +10,7 @@ import UIKit
 import SwiftyJSON
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 extension UIScrollView {
     func  isNearBottomEdge(edgeOffset: CGFloat = 20.0) -> Bool {
@@ -17,10 +18,12 @@ extension UIScrollView {
     }
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate {
     
     lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.delegate = self
+        tableView.separatorColor = UIColor.clear
         return tableView
     }()
     
@@ -39,17 +42,15 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         tableView.fillSuperview()
-        
         viewModel.loaded.asDriver(onErrorJustReturn: [])
-            .drive(tableView.rx.items(cellIdentifier: "Cell")) { _, repository, cell in
-                
-                self.isNextPageLoading = false
-                
-                cell.textLabel?.text = repository.login
-                cell.detailTextLabel?.text = repository.avatarUrl
-            }
-            .disposed(by: disposeBag)
-
+            .drive(tableView.rx.items) { (tableView, index, userInfo) -> UITableViewCell in
+                let indexPath = IndexPath(row: index, section: 0)
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! UserCell
+                cell.user = userInfo
+                return cell
+        }
+        .disposed(by: disposeBag)
+        
         searchBar.rx.text.orEmpty
             .bind(to: viewModel.searchText)
             .disposed(by: disposeBag)
@@ -57,18 +58,8 @@ class ViewController: UIViewController {
         
 
         
-        tableView.register(cell.self, forCellReuseIdentifier: "Cell")
-        
-//        let loadNextPageTrigger: (Driver<SearchUsersState>) -> Signal<()> = { state in
-//            self.tableView.rx.contentOffset.asDriver()
-//            .withLatestFrom(state)
-//                .flatMap { state in
-//                    return self.tableView.isNearBottomEdge() && !state.shouldLoadNextPage
-//                    ? Signal.just(())
-//                    : Signal.empty()
-//            }
-//        }
-        
+        tableView.register(UserCell.self, forCellReuseIdentifier: "Cell")
+    
         
         tableView.rx.contentOffset
             .filter{ point in self.tableView.isNearBottomEdge(edgeOffset: 20.0) && !self.isNextPageLoading }
@@ -93,41 +84,15 @@ class ViewController: UIViewController {
                 print($0)
         }
         .disposed(by: disposeBag)
-        
-//        searchBar.rx.text
-//            .orEmpty
-//            .distinctUntilChanged()
-//            .filter { !$0.isEmpty }
-//            .debounce(0.5, scheduler: MainScheduler.instance)
-//            .map{query in
-//                var apiUrl = URLComponents(string: "https://api.github.com/search/users")!
-//                apiUrl.queryItems = [URLQueryItem(name: "q", value: query)]
-//
-//                return apiUrl.url!
-//        }
-//            .flatMapLatest{ url in
-//                return URLSession.shared.rx.json(url: url)
-//                .catchErrorJustReturn([])
-//        }
-//            .map{ json -> [Item] in
-//                guard let json = json as? [String: Any],
-//                    let items = json["items"] as? [[String:Any]] else {
-//                        return []
-//                }
-//                return items.compactMap(Item.init)
-//        }
-//            .bind(to: tableView.rx.items){ tableView, row, repo in
-//                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
-//                cell.textLabel!.text = repo.login
-//                return cell
-//        }
-//        .disposed(by: disposeBag)
+      
         
 
     }
     
     
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
     
     func configureSearchController() {
         searchController.obscuresBackgroundDuringPresentation = false
@@ -140,7 +105,67 @@ class ViewController: UIViewController {
     
 }
 
-class cell: UITableViewCell {
+class UserCell: UITableViewCell {
+    let profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    let userNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        return label
+    }()
+    let scoreLabel: UILabel = {
+        let label = UILabel()
+        label.text = "score: "
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = UIColor.gray
+        return label
+    }()
+    
+    var user: User? {
+        didSet {
+            userNameLabel.text = user?.login
+            scoreLabel.text!.append(String(format: "%.5f", (user?.score) ?? 0.0))
+            
+            
+            profileImageView.kf.setImage(with: URL(string: (user?.avatarUrl)!))
+        }
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        setupViews()
+    }
+    func setupViews() {
+        addSubview(profileImageView)
+        addSubview(userNameLabel)
+        addSubview(scoreLabel)
+        
+        profileImageView.anchor(top: contentView.topAnchor,
+                                leading: contentView.leadingAnchor,
+                                bottom: nil,
+                                trailing: nil,
+                                padding: .init(top: 25, left: 25, bottom: 0, right: 0),
+                                size: .init(width: 50, height: 50))
+        userNameLabel.anchor(top: profileImageView.topAnchor,
+                             leading: profileImageView.trailingAnchor,
+                             bottom: nil,
+                             trailing: nil,
+                             padding: .init(top: 0, left: 5, bottom: 0, right: 0))
+        scoreLabel.anchor(top: userNameLabel.bottomAnchor,
+                          leading: userNameLabel.leadingAnchor,
+                          bottom: contentView.bottomAnchor,
+                          trailing: nil,
+                          padding: .init(top: 3, left: 0, bottom: 0, right: 0))
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 
 }
 
