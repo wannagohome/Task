@@ -11,7 +11,7 @@ import RxCocoa
 import Alamofire
 
 class ViewModel {
-    
+    static var shared = ViewModel()
     let searchText = BehaviorRelay(value: "")
     let loadNextPageTrigger =  BehaviorRelay(value: "")
     let disposeBag = DisposeBag()
@@ -52,8 +52,8 @@ class ViewModel {
         var result: [User] = []
         AF.request("https://api.github.com/search/users?q=\(quarry)", method: .get, encoding: JSONEncoding.default).responseJSON {
             (responds) in
-            let pageStatus: String =  responds.response?.allHeaderFields["Link"] as! String
-            if !pageStatus.contains("\"next\"") { self.isNextPageExist = false }
+            let pageStatus: String? =  responds.response?.allHeaderFields["Link"] as? String
+            if !(pageStatus?.contains("\"next\"") ?? false) { self.isNextPageExist = false }
             
             switch responds.result {
                 
@@ -81,8 +81,8 @@ class ViewModel {
         var result: [User] = []
         AF.request("https://api.github.com/search/users?q=\(quarry)&page=\(pageCount)", method: .get, encoding: JSONEncoding.default).responseJSON {
             (responds) in
-            let pageStatus: String =  responds.response?.allHeaderFields["Link"] as! String
-            if !pageStatus.contains("\"next\"") { self.isNextPageExist = false }
+            let pageStatus: String? =  responds.response?.allHeaderFields["Link"] as? String
+            if !(pageStatus?.contains("\"next\"") ?? false)  { self.isNextPageExist = false }
             
             switch responds.result {
         
