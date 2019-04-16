@@ -51,14 +51,21 @@ class ViewController: UIViewController, UITableViewDelegate {
                     
                     return cell
                 }
-                let cell: UserCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? UserCell ?? UserCell()
-                cell.user = userInfo
+                
+                let cell: UserCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                    as? UserCell ?? UserCell(style: .default, reuseIdentifier: "Cell")
+                
                 cell.index = index
+                cell.user = userInfo
+                
+                
                 return cell
                 
                 
         }
         .disposed(by: disposeBag)
+        
+        
         
         searchBar.rx.text.orEmpty
             .bind(to: ViewModel.shared.searchText)
@@ -85,7 +92,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
         return 100
     }
-    
+ 
     func configureSearchController() {
         searchController.obscuresBackgroundDuringPresentation = false
         searchBar.showsCancelButton = true
@@ -134,7 +141,7 @@ class UserCell: UITableViewCell {
         label.textColor = UIColor.gray
         return label
     }()
-    let stackView: UIStackView = {
+    var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 5
@@ -143,23 +150,40 @@ class UserCell: UITableViewCell {
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()
     var organizationsUrl: String?
     var organizationAvatarUrls: [String] = [] {
         didSet {
-            showOrganizationAvatar()
+//            showOrganizationAvatar()
         }
     }
     var index: Int = 0
-    
     
     var user: User? {
         didSet {
             userNameLabel.text = user?.login
             scoreLabel.text = "score: \((user?.score) ?? 0.0)"
-            profileImageView.kf.setImage(with: URL(string: (user?.avatarUrl)!))
+            profileImageView.kf.setImage(with: URL(string: (user?.avatarUrl ?? "")!))
             organizationsUrl = user?.organizationsUrl
+            
+            stackView.subviews.forEach{
+                $0.removeFromSuperview()
+            }
+            
+            user?.organizationAvatarUrls.forEach{
+                let avatarImageView = UIImageView()
+                avatarImageView.clipsToBounds = true
+                avatarImageView.translatesAutoresizingMaskIntoConstraints  = false
+                avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+                avatarImageView.contentMode = UIView.ContentMode.scaleAspectFit
+                avatarImageView.layer.cornerRadius = 20
+                avatarImageView.kf.setImage(with: URL(string: $0), placeholder: UIImage())
+                
+                stackView.addArrangedSubview(avatarImageView)
+            }
         }
     }
     
@@ -167,9 +191,11 @@ class UserCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupViews()
-        
+        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getOrganizationAvatarURLs)))
+        userNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getOrganizationAvatarURLs)))
     }
     
+
     
     func setupViews() {
         addSubview(profileImageView)
@@ -195,37 +221,31 @@ class UserCell: UITableViewCell {
                           padding: .init(top: 3, left: 0, bottom: 0, right: 0))
         
         
-        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getOrganizationAvatarURLs)))
-        userNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(getOrganizationAvatarURLs)))
-    }
-    
-    func showOrganizationAvatar() {
-        organizationAvatarUrls.forEach{
-            let avatarImageView = UIImageView()
-            avatarImageView.clipsToBounds = true
-            avatarImageView.translatesAutoresizingMaskIntoConstraints  = false
-            avatarImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            avatarImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            avatarImageView.contentMode = UIView.ContentMode.scaleAspectFit
-            avatarImageView.layer.cornerRadius = 20
-            avatarImageView.kf.setImage(with: URL(string: $0))
-            
-            stackView.addArrangedSubview(avatarImageView)
-        }
         addSubview(scrollView)
         scrollView.anchor(top: profileImageView.bottomAnchor,
-                         leading: profileImageView.leadingAnchor,
-                         bottom: nil,
-                         trailing: contentView.trailingAnchor,
-                         padding: .init(top: 5, left: 0, bottom: 0, right: 25),
-                         size: .init(width: contentView.bounds.width - 50, height: 40))
-        
+                          leading: profileImageView.leadingAnchor,
+                          bottom: nil,
+                          trailing: contentView.trailingAnchor,
+                          padding: .init(top: 5, left: 0, bottom: 0, right: 25),
+                          size: .init(width: contentView.bounds.width - 50, height: 40))
         scrollView.addSubview(stackView)
         stackView.anchor(top: scrollView.topAnchor,
                          leading: scrollView.leadingAnchor,
                          bottom: scrollView.bottomAnchor,
                          trailing: scrollView.trailingAnchor)
-        scrollView.showsHorizontalScrollIndicator = false
+        
+        
+        
+        
+    }
+
+    
+    func showOrganizationAvatar() {
+        
+        
+        
+        
+        
         ViewModel.shared.user[index].isExpanded = true
     }
     
@@ -246,7 +266,8 @@ class UserCell: UITableViewCell {
                         urls.append(org["avatar_url"].stringValue)
                         
                     }
-                    self.organizationAvatarUrls = urls
+                    ViewModel.shared.user[self.index].organizationAvatarUrls = urls
+                    self.showOrganizationAvatar()
                 case .failure(let error):
                     print(error.localizedDescription)
                 }

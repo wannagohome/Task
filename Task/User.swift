@@ -21,6 +21,7 @@ struct User : Codable {
     var url : String?
     var isExpanded: Bool = false
     var isLoadingCell: Bool = false
+    var organizationAvatarUrls: [String] = []
 
 
 	enum CodingKeys: String, CodingKey {
