@@ -46,14 +46,12 @@ class ViewController: UIViewController {
     
     
     
-    @objc func showOrganizationAvatarURLs(_ sender: UITapGestureRecognizer) {
-        guard let view: UIView = sender.view  else {
+    @objc func userCellAction(_ sender: UITapGestureRecognizer) {
+        guard let view: UIView = sender.view,
+        let url = URL(string: ViewModel.shared.users[view.tag].organizationsUrl ?? "") else {
             return
         }
         let index: Int = view.tag
-        guard let url = URL(string: ViewModel.shared.users[index].organizationsUrl ?? "")else {
-                return
-        }
         
         // 펼쳐져 있는 경우 다시 접음
         if ViewModel.shared.users[index].isExpanded {
@@ -83,6 +81,11 @@ class ViewController: UIViewController {
                     print(error.localizedDescription)
                 }
         }
+    }
+    
+    
+    func foldIfExpanded(index: Int) {
+        
     }
     
     
@@ -194,8 +197,8 @@ class ViewController: UIViewController {
                 cell.profileImageView.tag = index
                 cell.userNameLabel.tag = index
                 
-                cell.profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.showOrganizationAvatarURLs)))
-                cell.userNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.showOrganizationAvatarURLs)))
+                cell.profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userCellAction)))
+                cell.userNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userCellAction)))
                 
                 
                 return cell
