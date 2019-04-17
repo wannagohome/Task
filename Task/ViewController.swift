@@ -84,9 +84,6 @@ class ViewController: UIViewController {
     }
     
     
-    func foldIfExpanded(index: Int) {
-        
-    }
     
     
     
@@ -216,5 +213,9 @@ extension ViewController: UITableViewDelegate {
             return 143
         }
         return 100
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        searchController.searchBar.endEditing(true)
     }
 }
