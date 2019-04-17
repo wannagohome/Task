@@ -47,6 +47,8 @@ class ViewModel {
     var quarry: String = String();
     var isNextPageExist: Bool = true
     var isNextPageLoading: Bool = false
+    var xRateRemain = BehaviorSubject<Int>(value: 9)
+    var xRateLimit: Int = 10
     
     
     func getUserList(_ quarry: String) {
@@ -68,8 +70,16 @@ class ViewModel {
             (responds) in
             
             // 다음 페이지 존재 여부 확인
-            let pageStatus: String? =  responds.response?.allHeaderFields["Link"] as? String
-            if !(pageStatus?.contains("\"next\"") ?? false) { self.isNextPageExist = false }
+            let httpHeaders: String? =  responds.response?.allHeaderFields["Link"] as? String
+            if !(httpHeaders?.contains("\"next\"") ?? false) { self.isNextPageExist = false }
+            
+            // 페이지 조회 가능 횟수 확인
+            let xRate: String = responds.response?.allHeaderFields["X-RateLimit-Remaining"] as? String ?? "999"
+            self.xRateRemain.onNext(Int(xRate)!)
+            
+            // 분당 페이지 조회 횟수 제한 확인
+            let xRateLimit: String = responds.response?.allHeaderFields["X-RateLimit-Limit"] as? String ?? "10"
+            self.xRateLimit = Int(xRateLimit)!
             
             // 검색 결과를 Array 형식으로 저장
             switch responds.result {

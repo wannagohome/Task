@@ -10,7 +10,7 @@ import UIKit
 
 
 extension UIScrollView {
-    func  isNearBottomEdge(edgeOffset: CGFloat = 20.0) -> Bool {
+    func  isNearBottomEdge(_ edgeOffset: CGFloat = 20.0) -> Bool {
         return self.contentOffset.y + self.frame.size.height + edgeOffset > self.contentSize.height
     }
 }
@@ -50,6 +50,25 @@ extension UIView {
         
         if size.height != 0 {
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        }
+    }
+}
+
+extension String {
+    var isAlphanumeric: Bool {
+        return !isEmpty && range(of: "[^a-zA-Z0-9]", options: .regularExpression) == nil
+    }
+}
+
+
+extension UIViewController {
+    func showAlert(message: String) {
+        DispatchQueue.main.async {
+            let alertMessage = UIAlertController(title: "", message: message, preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+            
+            alertMessage.addAction(cancelAction)
+            self.present(alertMessage, animated: true, completion: nil)
         }
     }
 }
