@@ -33,16 +33,17 @@ class ViewController: UIViewController {
     let LoadingCell_Identifier: String = "LoadingCell"
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupSearchBar()
         setupTableView()
         setupNextPageLoading()
-        driveToTableViewItems()
+        showTableViewItems()
         checkSearchAvailable()
-        
     }
+    
     
     
     @objc func showOrganizationAvatarURLs(_ sender: UITapGestureRecognizer) {
@@ -77,8 +78,7 @@ class ViewController: UIViewController {
                     // 표시할 Organization이 없다면 UI에 변화를 주지 않음
                     if urls.isEmpty { return }
                     
-                    ViewModel.shared.users[index].organizationAvatarUrls = urls
-                    ViewModel.shared.users[index].isExpanded = true
+                    ViewModel.shared.users[index].showOrganizationsWithURLs(urls: urls)
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
@@ -87,16 +87,13 @@ class ViewController: UIViewController {
     
     
     
-    
     func setupNextPageLoading() {
         tableView.rx.contentOffset
             .filter{ _ in
-                
                 self.tableView.isNearBottomEdge() &&
                 ViewModel.shared.isNextPageLoading == false
             }
-            .map{ _ in
-                "nextPage"}
+            .map{ _ in "nextPage"}
             .bind(to: ViewModel.shared.tableContentOffset)
             .disposed(by: disposeBag)
     }
@@ -132,11 +129,8 @@ class ViewController: UIViewController {
         
         tableView.register(UserCell.self, forCellReuseIdentifier: UserCell_Identifier)
         tableView.register(LoadingCell.self, forCellReuseIdentifier: LoadingCell_Identifier)
-        
-        
-       
-        
     }
+    
     
     
     func checkSearchAvailable() {
@@ -153,7 +147,8 @@ class ViewController: UIViewController {
     }
     
     
-    func driveToTableViewItems() {
+    
+    func showTableViewItems() {
         ViewModel.shared.dataSource.asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items) { (tableView, index, userInfo) -> UITableViewCell in
                 let indexPath = IndexPath(row: index, section: 0)
@@ -208,6 +203,7 @@ class ViewController: UIViewController {
             .disposed(by: disposeBag)
     }
 }
+
 
 
 extension ViewController: UITableViewDelegate {

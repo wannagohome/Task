@@ -14,6 +14,7 @@ class UserCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupViews()
+        
     }
     
     
@@ -49,12 +50,13 @@ class UserCell: UITableViewCell {
                           bottom: nil,
                           trailing: contentView.trailingAnchor,
                           padding: .init(top: 5, left: 0, bottom: 0, right: 25),
-                          size: .init(width: contentView.bounds.width, height: 40))
+                          size: .init(width: UIScreen.main.bounds.width - 50, height: 40))
         scrollView.addSubview(stackView)
         stackView.anchor(top: scrollView.topAnchor,
                          leading: scrollView.leadingAnchor,
                          bottom: scrollView.bottomAnchor,
                          trailing: scrollView.trailingAnchor)
+        
     }
     
     

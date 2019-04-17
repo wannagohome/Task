@@ -44,6 +44,11 @@ struct User : Codable {
         self.isLoadingCell = isLoadingCell
     }
     
+    mutating func showOrganizationsWithURLs(urls: [String]) {
+        self.organizationAvatarUrls = urls
+        self.isExpanded = true
+    }
+    
 	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
 		avatarUrl = try values.decodeIfPresent(String.self, forKey: .avatarUrl)
@@ -76,8 +81,6 @@ struct User : Codable {
             let url = object["url"] as? String else {
                 return nil
         }
-        
-        
         
         self.avatarUrl = avatarUrl
         self.followersUrl = followersUrl
