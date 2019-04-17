@@ -13,37 +13,40 @@ import Alamofire
 class ViewModel {
     static var shared = ViewModel()
     let searchText = BehaviorRelay(value: "")
-    let loadNextPageTrigger =  BehaviorRelay(value: "")
+    let tableContentOffset =  BehaviorRelay(value: "")
     let disposeBag = DisposeBag()
 
     
-    var loaded: BehaviorSubject<[User]> = BehaviorSubject<[User]>(value: [])
+    var dataSource: BehaviorSubject<[User]> = BehaviorSubject<[User]>(value: [])
     var pageCount: Int = 1
 
-    var user:[User] = [] {
+    var users:[User] = [] {
         didSet {
-            self.loaded.onNext(user)
+            self.dataSource.onNext(users)
         }
     }
+    
+    
     init() {
         searchText.asObservable()
             .throttle(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .subscribe{ self.loadFirstPage($0.element!) }
+            .subscribe{ self.getFirstPage($0.element!) }
             .disposed(by: disposeBag)
         
-        loadNextPageTrigger.asObservable()
+        tableContentOffset.asObservable()
             .throttle(0.3, scheduler: MainScheduler.instance)
-            .subscribe{ self.loadNextPage($0.element!) }
+            .subscribe{ self.getNextPage($0.element!) }
             .disposed(by: disposeBag)
     }
+    
     
     
     var quarry: String = String();
     var isNextPageExist: Bool = true
 
     
-    func loadFirstPage(_ quarry: String) {
+    func getFirstPage(_ quarry: String) {
         guard !quarry.isEmpty else { return }
         self.quarry = quarry
         pageCount = 1
@@ -59,9 +62,9 @@ class ViewModel {
                 
             case .success(let value):
                 result = self.parse(json: value)
-                self.user = result
+                self.users = result
                 if self.isNextPageExist {
-                    self.user.append(User(true))
+                    self.users.append(User(true))
                 }
                 
                 
@@ -73,7 +76,7 @@ class ViewModel {
     }
     
     
-    func loadNextPage(_ pageNumber : String) {
+    func getNextPage(_ pageNumber : String) {
         guard !pageNumber.isEmpty, isNextPageExist else { return }
         
         pageCount += 1
@@ -88,10 +91,10 @@ class ViewModel {
         
             case .success(let value):
                 result = self.parse(json: value)
-                self.user.remove(at: self.user.count - 1)
-                self.user.append(contentsOf: result)
+                self.users.remove(at: self.users.count - 1)
+                self.users.append(contentsOf: result)
                 if self.isNextPageExist {
-                    self.user.append(User(true))
+                    self.users.append(User(true))
                 }
                 
             case .failure(let error):

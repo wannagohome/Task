@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6E54B6CCA87B99D40BC205C9 /* libPods-Task.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3C12F99046754C4D3498B2 /* libPods-Task.a */; };
+		AC200E252266A109004D9072 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E242266A109004D9072 /* Extentions.swift */; };
+		AC200E272266A420004D9072 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E262266A420004D9072 /* UserCell.swift */; };
+		AC200E292266A448004D9072 /* LoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E282266A448004D9072 /* LoadingCell.swift */; };
 		AC7E0F3A225CDB520096364B /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7E0F39225CDB520096364B /* ViewModel.swift */; };
 		AC7E0F3C225D6BA30096364B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7E0F3B225D6BA30096364B /* User.swift */; };
 		AC979B60225C4B2900F37664 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC979B5F225C4B2900F37664 /* AppDelegate.swift */; };
@@ -20,6 +23,9 @@
 
 /* Begin PBXFileReference section */
 		9B4BDCAB377471048DAAA3C6 /* Pods-Task.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Task.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Task/Pods-Task.debug.xcconfig"; sourceTree = "<group>"; };
+		AC200E242266A109004D9072 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
+		AC200E262266A420004D9072 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		AC200E282266A448004D9072 /* LoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCell.swift; sourceTree = "<group>"; };
 		AC7E0F39225CDB520096364B /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		AC7E0F3B225D6BA30096364B /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		AC979B5C225C4B2900F37664 /* Task.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Task.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,9 +92,12 @@
 			isa = PBXGroup;
 			children = (
 				AC979B5F225C4B2900F37664 /* AppDelegate.swift */,
+				AC200E242266A109004D9072 /* Extentions.swift */,
 				AC979B61225C4B2900F37664 /* ViewController.swift */,
 				AC7E0F39225CDB520096364B /* ViewModel.swift */,
 				AC7E0F3B225D6BA30096364B /* User.swift */,
+				AC200E262266A420004D9072 /* UserCell.swift */,
+				AC200E282266A448004D9072 /* LoadingCell.swift */,
 				AC979B63225C4B2900F37664 /* Main.storyboard */,
 				AC979B66225C4B2A00F37664 /* Assets.xcassets */,
 				AC979B68225C4B2A00F37664 /* LaunchScreen.storyboard */,
@@ -197,6 +206,9 @@
 			files = (
 				AC7E0F3C225D6BA30096364B /* User.swift in Sources */,
 				AC979B62225C4B2900F37664 /* ViewController.swift in Sources */,
+				AC200E272266A420004D9072 /* UserCell.swift in Sources */,
+				AC200E252266A109004D9072 /* Extentions.swift in Sources */,
+				AC200E292266A448004D9072 /* LoadingCell.swift in Sources */,
 				AC7E0F3A225CDB520096364B /* ViewModel.swift in Sources */,
 				AC979B60225C4B2900F37664 /* AppDelegate.swift in Sources */,
 			);
