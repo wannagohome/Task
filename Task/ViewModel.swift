@@ -22,7 +22,9 @@ class ViewModel {
 
     var users:[User] = [] {
         didSet {
+            // 데이터에 변화가 생길 때 마다 dataSource에 쏴주면서 최신화
             self.dataSource.onNext(users)
+            isNextPageLoading = false
         }
     }
     
@@ -31,12 +33,12 @@ class ViewModel {
         searchText.asObservable()
             .throttle(0.3, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .subscribe{ self.getFirstPage($0.element!) }
+            .subscribe{ self.getUserList($0.element!) }
             .disposed(by: disposeBag)
         
         tableContentOffset.asObservable()
             .throttle(0.3, scheduler: MainScheduler.instance)
-            .subscribe{ self.getNextPage($0.element!) }
+            .subscribe{ self.getUserList($0.element!) }
             .disposed(by: disposeBag)
     }
     
@@ -44,25 +46,44 @@ class ViewModel {
     
     var quarry: String = String();
     var isNextPageExist: Bool = true
-
+    var isNextPageLoading: Bool = false
     
-    func getFirstPage(_ quarry: String) {
+    
+    func getUserList(_ quarry: String) {
         guard !quarry.isEmpty else { return }
-        self.quarry = quarry
-        pageCount = 1
-        isNextPageExist = true
+        
+        if quarry == "nextPage" {
+            guard isNextPageExist else { return }
+            isNextPageLoading = true
+            pageCount += 1
+        } else {
+            self.quarry = quarry
+            pageCount = 1
+            isNextPageExist = true
+        }
+        
         
         var result: [User] = []
-        AF.request("https://api.github.com/search/users?q=\(quarry)", method: .get, encoding: JSONEncoding.default).responseJSON {
+        AF.request("https://api.github.com/search/users?q=\(self.quarry)&page=\(pageCount)", method: .get, encoding: JSONEncoding.default).responseJSON {
             (responds) in
+            
+            // 다음 페이지 존재 여부 확인
             let pageStatus: String? =  responds.response?.allHeaderFields["Link"] as? String
             if !(pageStatus?.contains("\"next\"") ?? false) { self.isNextPageExist = false }
             
+            // 검색 결과를 Array 형식으로 저장
             switch responds.result {
                 
             case .success(let value):
                 result = self.parse(json: value)
-                self.users = result
+                
+                if quarry == "nextPage" {
+                    self.users.remove(at: self.users.count - 1)
+                    self.users.append(contentsOf: result)
+                } else {
+                    self.users = result
+                }
+                
                 if self.isNextPageExist {
                     self.users.append(User(true))
                 }
@@ -74,36 +95,6 @@ class ViewModel {
             }
         }
     }
-    
-    
-    func getNextPage(_ pageNumber : String) {
-        guard !pageNumber.isEmpty, isNextPageExist else { return }
-        
-        pageCount += 1
-        
-        var result: [User] = []
-        AF.request("https://api.github.com/search/users?q=\(quarry)&page=\(pageCount)", method: .get, encoding: JSONEncoding.default).responseJSON {
-            (responds) in
-            let pageStatus: String? =  responds.response?.allHeaderFields["Link"] as? String
-            if !(pageStatus?.contains("\"next\"") ?? false)  { self.isNextPageExist = false }
-            
-            switch responds.result {
-        
-            case .success(let value):
-                result = self.parse(json: value)
-                self.users.remove(at: self.users.count - 1)
-                self.users.append(contentsOf: result)
-                if self.isNextPageExist {
-                    self.users.append(User(true))
-                }
-                
-            case .failure(let error):
-                print(error.localizedDescription)
-                
-            }
-        }
-    }
-    
     
     func parse(json: Any) -> [User] {
         guard let json = json as? [String: Any],

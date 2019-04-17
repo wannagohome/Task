@@ -76,24 +76,28 @@ class UserCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.isUserInteractionEnabled = true
+        label.backgroundColor = .clear
         return label
     }()
     let scoreLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor.gray
+        label.backgroundColor = .clear
         return label
     }()
     var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 5
+        stackView.backgroundColor = .clear
         return stackView
     }()
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.backgroundColor = .clear
         return scrollView
     }()
 }

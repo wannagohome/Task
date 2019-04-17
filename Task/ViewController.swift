@@ -28,7 +28,6 @@ class ViewController: UIViewController {
     var searchBar: UISearchBar { return searchController.searchBar }
     
     let disposeBag = DisposeBag()
-    var isNextPageLoading: Bool = false
     
     
     
@@ -39,6 +38,12 @@ class ViewController: UIViewController {
         setupTableView()
         setupNextPageLoading()
         driveToTableViewItems()
+        
+        ViewModel.shared.tableContentOffset
+            .subscribe{
+                print($0)
+        }
+        .disposed(by: disposeBag)
     }
     
     
@@ -76,9 +81,12 @@ class ViewController: UIViewController {
     
     func setupNextPageLoading() {
         tableView.rx.contentOffset
-            .filter{ point in self.tableView.isNearBottomEdge(edgeOffset: 20.0) && !self.isNextPageLoading }
-            .debounce(0.5, scheduler: MainScheduler.instance)
-            .map{ "\($0.y )"}
+            .filter{ _ in
+                self.tableView.isNearBottomEdge(edgeOffset: 20.0) &&
+                ViewModel.shared.isNextPageLoading == false
+            }
+            .map{ _ in
+                "nextPage"}
             .bind(to: ViewModel.shared.tableContentOffset)
             .disposed(by: disposeBag)
     }
