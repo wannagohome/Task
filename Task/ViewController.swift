@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SwiftyJSON
 import RxSwift
 import RxCocoa
 import Alamofire
@@ -43,48 +42,6 @@ class ViewController: UIViewController {
         showTableViewItems()
         checkSearchAvailable()
     }
-    
-    
-    
-    @objc func userCellAction(_ sender: UITapGestureRecognizer) {
-        guard let view: UIView = sender.view,
-        let url = URL(string: ViewModel.shared.users[view.tag].organizationsUrl ?? "") else {
-            return
-        }
-        let index: Int = view.tag
-        
-        // 펼쳐져 있는 경우 다시 접음
-        if ViewModel.shared.users[index].isExpanded {
-            ViewModel.shared.users[index].isExpanded = false
-            return
-        }
-        
-        
-        AF.request(url, method: .get, encoding: JSONEncoding.default)
-            .responseJSON{ (response) in
-                
-                switch response.result {
-                    
-                case .success(let value):
-                    let json = JSON(value)
-                    var urls: [String] = []
-                    
-                    json.forEach { (_, org) in
-                        urls.append(org["avatar_url"].stringValue)
-                    }
-                    
-                    // 표시할 Organization이 없다면 UI에 변화를 주지 않음
-                    if urls.isEmpty { return }
-                    
-                    ViewModel.shared.users[index].showOrganizationsWithURLs(urls: urls)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-        }
-    }
-    
-    
-    
     
     
     func setupNextPageLoading() {
@@ -193,9 +150,6 @@ class ViewController: UIViewController {
                 // Tag를 index로 활용
                 cell.profileImageView.tag = index
                 cell.userNameLabel.tag = index
-                
-                cell.profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userCellAction)))
-                cell.userNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userCellAction)))
                 
                 
                 return cell

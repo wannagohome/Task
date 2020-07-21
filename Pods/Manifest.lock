@@ -4,30 +4,26 @@ PODS:
   - RxCocoa (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - RxSwift (4.5.0)
-  - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0.0-beta.2)
-  - Kingfisher (~> 5.0)
-  - RxCocoa (~> 4.0)
-  - RxSwift (~> 4.0)
-  - SwiftyJSON (~> 4.0)
+  - Kingfisher
+  - RxCocoa
+  - RxSwift
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - Kingfisher
     - RxCocoa
     - RxSwift
-    - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: 9afb08f7f43efcc71c072374e720fcf67521317d
   Kingfisher: d9e7e0b209b59b8f9873aa2f37654e81a7beea51
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
-  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: d975b586141c159f4122622b27a4a1adf2b5f0f2
+PODFILE CHECKSUM: 58b18ca759404bd07adc9ac1298996a88b70daa6
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.1
