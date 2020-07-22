@@ -123,7 +123,7 @@ class ViewController: UIViewController {
                 
                 cell.userNameLabel.text = userInfo.login
                 cell.scoreLabel.text = "score: \((userInfo.score) ?? 0.0)"
-                cell.profileImageView.kf.setImage(with: URL(string: (userInfo.avatarUrl ?? "")!))
+                cell.profileImageView.kf.setImage(with: URL(string: (userInfo.avatarURL ?? "")!))
                 
                 
                 // Cell 재활용으로 인해 view가 깨는 현상 방지

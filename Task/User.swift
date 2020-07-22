@@ -4,42 +4,36 @@
 
 import Foundation
 
-struct User : Codable {
+struct SearchResult: Codable {
+    var totalCount: Int?
+    var incompleteResults: Bool?
+    var items: [User]?
 
-    var avatarUrl : String?
-    var followersUrl : String?
-    var gravatarId : String?
-    var htmlUrl : String?
-    var id : Int?
-    var login : String?
-    var organizationsUrl : String?
-    var receivedEventsUrl : String?
-    var reposUrl : String?
-    var score : Double?
-    var subscriptionsUrl : String?
-    var type : String?
-    var url : String?
+    enum CodingKeys: String, CodingKey {
+        case totalCount = "total_count"
+        case incompleteResults = "incomplete_results"
+        case items
+    }
+}
+
+struct User: Codable {
+    var login: String?
+    var id: Int?
+    var nodeID: String?
+    var avatarURL: String?
+    var gravatarID: String?
+    var url, htmlURL, followersURL: String?
+    var followingURL, gistsURL, starredURL: String?
+    var subscriptionsURL, organizationsURL, reposURL: String?
+    var eventsURL: String?
+    var receivedEventsURL: String?
+    var type: Type?
+    var siteAdmin: Bool?
+    var score: Double?
     var isExpanded: Bool = false
     var isLoadingCell: Bool = false
     var organizationAvatarUrls: [String] = []
 
-
-	enum CodingKeys: String, CodingKey {
-		case avatarUrl = "avatar_url"
-		case followersUrl = "followers_url"
-		case gravatarId = "gravatar_id"
-		case htmlUrl = "html_url"
-		case id = "id"
-		case login = "login"
-		case organizationsUrl = "organizations_url"
-		case receivedEventsUrl = "received_events_url"
-		case reposUrl = "repos_url"
-		case score = "score"
-		case subscriptionsUrl = "subscriptions_url"
-		case type = "type"
-		case url = "url"
-	}
-    
     init(_ isLoadingCell: Bool) {
         self.isLoadingCell = isLoadingCell
     }
@@ -51,18 +45,18 @@ struct User : Codable {
     
 	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
-		avatarUrl = try values.decodeIfPresent(String.self, forKey: .avatarUrl)
-		followersUrl = try values.decodeIfPresent(String.self, forKey: .followersUrl)
-		gravatarId = try values.decodeIfPresent(String.self, forKey: .gravatarId)
-		htmlUrl = try values.decodeIfPresent(String.self, forKey: .htmlUrl)
+		avatarURL = try values.decodeIfPresent(String.self, forKey: .avatarURL)
+		followingURL = try values.decodeIfPresent(String.self, forKey: .followingURL)
+		gravatarID = try values.decodeIfPresent(String.self, forKey: .gravatarID)
+		htmlURL = try values.decodeIfPresent(String.self, forKey: .htmlURL)
 		id = try values.decodeIfPresent(Int.self, forKey: .id)
 		login = try values.decodeIfPresent(String.self, forKey: .login)
-		organizationsUrl = try values.decodeIfPresent(String.self, forKey: .organizationsUrl)
-		receivedEventsUrl = try values.decodeIfPresent(String.self, forKey: .receivedEventsUrl)
-		reposUrl = try values.decodeIfPresent(String.self, forKey: .reposUrl)
+		organizationsURL = try values.decodeIfPresent(String.self, forKey: .organizationsURL)
+		receivedEventsURL = try values.decodeIfPresent(String.self, forKey: .receivedEventsURL)
+		reposURL = try values.decodeIfPresent(String.self, forKey: .reposURL)
 		score = try values.decodeIfPresent(Double.self, forKey: .score)
-		subscriptionsUrl = try values.decodeIfPresent(String.self, forKey: .subscriptionsUrl)
-		type = try values.decodeIfPresent(String.self, forKey: .type)
+		subscriptionsURL = try values.decodeIfPresent(String.self, forKey: .subscriptionsURL)
+		type = try values.decodeIfPresent(Type.self, forKey: .type)
 		url = try values.decodeIfPresent(String.self, forKey: .url)
 	}
     init?(object: [String: Any]) {
@@ -77,24 +71,47 @@ struct User : Codable {
             let reposUrl = object["repos_url"] as? String,
             let score = object["score"] as? Double,
             let subscriptionsUrl = object["subscriptions_url"] as? String,
-            let type = object["type"] as? String,
+            let type = object["type"] as? Type,
             let url = object["url"] as? String else {
                 return nil
         }
         
-        self.avatarUrl = avatarUrl
-        self.followersUrl = followersUrl
-        self.gravatarId = gravatarId
-        self.htmlUrl = htmlUrl
+        self.avatarURL = avatarUrl
+        self.followingURL = followersUrl
+        self.gravatarID = gravatarId
+        self.htmlURL = htmlUrl
         self.id = id
         self.login = login
-        self.organizationsUrl = organizationsUrl
-        self.receivedEventsUrl = receivedEventsUrl
-        self.reposUrl = reposUrl
+        self.organizationsURL = organizationsUrl
+        self.receivedEventsURL = receivedEventsUrl
+        self.reposURL = reposUrl
         self.score = score
-        self.subscriptionsUrl = subscriptionsUrl
+        self.subscriptionsURL = subscriptionsUrl
         self.type = type
         self.url = url
     }
 
+    enum CodingKeys: String, CodingKey {
+        case login, id
+        case nodeID = "node_id"
+        case avatarURL = "avatar_url"
+        case gravatarID = "gravatar_id"
+        case url
+        case htmlURL = "html_url"
+        case followersURL = "followers_url"
+        case followingURL = "following_url"
+        case gistsURL = "gists_url"
+        case starredURL = "starred_url"
+        case subscriptionsURL = "subscriptions_url"
+        case organizationsURL = "organizations_url"
+        case reposURL = "repos_url"
+        case eventsURL = "events_url"
+        case receivedEventsURL = "received_events_url"
+        case type
+        case siteAdmin = "site_admin"
+        case score
+    }
+}
+enum Type: String, Codable {
+    case user = "User"
 }
