@@ -9,9 +9,13 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Then
+import SnapKit
 
 protocol ViewBindable {
     var searchText: PublishSubject<String> { get }
+    
+    var cellData: Driver<[User]> { get }
 }
 
 class ViewController: UIViewController {
@@ -21,6 +25,7 @@ class ViewController: UIViewController {
     
     //MARK: - Views
     let searchController = UISearchController(searchResultsController: nil)
+    let tableView = UITableView(frame: .zero, style: .plain)
     
     //MARK: - Life Cycle
     init(viewModel: ViewBindable) {
@@ -33,10 +38,42 @@ class ViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        attribute()
+        layout()
+    }
+    
     //MARK: - Bind
-    func bind(viewModel: ViewBindable) {
+    private func bind(viewModel: ViewBindable) {
         self.searchController.searchBar.rx.text.orEmpty
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .filterEmpty()
             .bind(to: viewModel.searchText)
             .disposed(by: disposeBag)
+        
+        viewModel.cellData
+            .drive(tableView.rx.items) { tb, row, data in
+                let cell = tb.dequeueReusableCell(withIdentifier: UserCell.description(), for: IndexPath(row: row, section: 0)) as! UserCell
+                cell.setData(data)
+                return cell
+        }
+        .disposed(by: disposeBag)
+    }
+    
+    private func layout() {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { m in
+            m.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    private func attribute() {
+        tableView.do {
+            $0.rowHeight = 60
+            $0.tableHeaderView = searchController.searchBar
+            $0.register(UserCell.self, forCellReuseIdentifier: UserCell.description())
+        }
     }
 }

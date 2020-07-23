@@ -9,6 +9,8 @@ target 'Task' do
   pod 'RxOptional'
   pod 'RxBlocking'
   pod 'RxTest'
+  pod 'Then'
+  pod 'SnapKit'
 
   target 'TaskTests' do
   end

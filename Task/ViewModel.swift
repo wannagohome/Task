@@ -15,6 +15,8 @@ class ViewModel: ViewBindable {
     
     var searchText = PublishSubject<String>()
     
+    var cellData: Driver<[User]>
+    
     var searchResult: Observable<[User]>
     
     init(userService: UserServiceProtocol) {
@@ -31,7 +33,8 @@ class ViewModel: ViewBindable {
         .filterNil()
         
         
-        
+        self.cellData = searchResult
+            .asDriver(onErrorDriveWith: .empty())
     }
 }
 
