@@ -6,6 +6,9 @@ target 'Task' do
   pod 'Kingfisher'
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'RxOptional'
+  pod 'RxBlocking'
+  pod 'RxTest'
 
   target 'TaskTests' do
   end

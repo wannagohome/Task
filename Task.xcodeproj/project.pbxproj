@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2353048C24C82BC6009D5971 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2353048B24C82BC6009D5971 /* API.swift */; };
-		2353048E24C82D3D009D5971 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2353048D24C82D3D009D5971 /* NetworkManager.swift */; };
 		2353049124C82DA2009D5971 /* NetworkManagerStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2353049024C82DA2009D5971 /* NetworkManagerStub.swift */; };
 		2353049324C82E96009D5971 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2353049224C82E96009D5971 /* SampleData.swift */; };
+		2353049524C83716009D5971 /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2353049424C83716009D5971 /* ViewControllerTests.swift */; };
+		235D2B8124C9591700129C1E /* UserServiceStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8024C9591700129C1E /* UserServiceStub.swift */; };
+		235D2B8424C9783500129C1E /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8224C9783500129C1E /* API.swift */; };
+		235D2B8524C9783500129C1E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8324C9783500129C1E /* NetworkManager.swift */; };
 		7D557C10A861A6F5E8F5167F /* Pods_Task_TaskTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97EEBE3A848B2B6DCFC69DC0 /* Pods_Task_TaskTests.framework */; };
 		A317C371D3D1D815F6B5044D /* Pods_Task.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56CE5176976C9683B510460B /* Pods_Task.framework */; };
 		AC200E252266A109004D9072 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E242266A109004D9072 /* Extentions.swift */; };
@@ -38,10 +40,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2353048B24C82BC6009D5971 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../../../../../Documents/API.swift; sourceTree = "<group>"; };
-		2353048D24C82D3D009D5971 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NetworkManager.swift; path = ../../../../../Documents/NetworkManager.swift; sourceTree = "<group>"; };
 		2353049024C82DA2009D5971 /* NetworkManagerStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerStub.swift; sourceTree = "<group>"; };
 		2353049224C82E96009D5971 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		2353049424C83716009D5971 /* ViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerTests.swift; sourceTree = "<group>"; };
+		235D2B8024C9591700129C1E /* UserServiceStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceStub.swift; sourceTree = "<group>"; };
+		235D2B8224C9783500129C1E /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		235D2B8324C9783500129C1E /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		5436E16F29EED5129C7E00F5 /* Pods-Task.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Task.release.xcconfig"; path = "Target Support Files/Pods-Task/Pods-Task.release.xcconfig"; sourceTree = "<group>"; };
 		56CE5176976C9683B510460B /* Pods_Task.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Task.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D1C8ABD475B253917CAEBB3 /* Pods-Task.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Task.debug.xcconfig"; path = "Target Support Files/Pods-Task/Pods-Task.debug.xcconfig"; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				2353049024C82DA2009D5971 /* NetworkManagerStub.swift */,
+				235D2B8024C9591700129C1E /* UserServiceStub.swift */,
 			);
 			path = Stub;
 			sourceTree = "<group>";
@@ -158,6 +163,7 @@
 			children = (
 				2353048F24C82D93009D5971 /* Stub */,
 				D0190EEA24C6FD46001FE6D8 /* UserServiceTests.swift */,
+				2353049424C83716009D5971 /* ViewControllerTests.swift */,
 				D0190EEC24C6FD46001FE6D8 /* Info.plist */,
 				2353049224C82E96009D5971 /* SampleData.swift */,
 			);
@@ -167,9 +173,9 @@
 		D0190EF224C70AE0001FE6D8 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				2353048D24C82D3D009D5971 /* NetworkManager.swift */,
+				235D2B8324C9783500129C1E /* NetworkManager.swift */,
 				D0190EF324C70AEB001FE6D8 /* UserService.swift */,
-				2353048B24C82BC6009D5971 /* API.swift */,
+				235D2B8224C9783500129C1E /* API.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -362,13 +368,13 @@
 			files = (
 				AC7E0F3C225D6BA30096364B /* User.swift in Sources */,
 				D0190EF424C70AEB001FE6D8 /* UserService.swift in Sources */,
-				2353048E24C82D3D009D5971 /* NetworkManager.swift in Sources */,
+				235D2B8524C9783500129C1E /* NetworkManager.swift in Sources */,
 				AC979B62225C4B2900F37664 /* ViewController.swift in Sources */,
 				AC200E272266A420004D9072 /* UserCell.swift in Sources */,
 				AC200E252266A109004D9072 /* Extentions.swift in Sources */,
 				AC200E292266A448004D9072 /* LoadingCell.swift in Sources */,
 				AC7E0F3A225CDB520096364B /* ViewModel.swift in Sources */,
-				2353048C24C82BC6009D5971 /* API.swift in Sources */,
+				235D2B8424C9783500129C1E /* API.swift in Sources */,
 				AC979B60225C4B2900F37664 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,6 +385,8 @@
 			files = (
 				2353049124C82DA2009D5971 /* NetworkManagerStub.swift in Sources */,
 				2353049324C82E96009D5971 /* SampleData.swift in Sources */,
+				2353049524C83716009D5971 /* ViewControllerTests.swift in Sources */,
+				235D2B8124C9591700129C1E /* UserServiceStub.swift in Sources */,
 				D0190EEB24C6FD46001FE6D8 /* UserServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

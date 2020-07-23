@@ -12,6 +12,15 @@ protocol UserServiceProtocol {
     func searchUser(q: String) -> Observable<Result<SearchResult, NetworkError>>
 }
 
+extension UserServiceProtocol {
+    func serchUserComponents(q: String) -> URLComponents {
+        var result = GitHubUserAPI.basicComponents
+        result.queryItems = [URLQueryItem(name: "q", value: q)]
+        
+        return result
+    }
+}
+
 final class UserService: UserServiceProtocol {
     let networkManager: NetworkingManagerProtocol
     
@@ -27,11 +36,6 @@ final class UserService: UserServiceProtocol {
         }
         return networkManager.request(URLRequest(url: url))
     }
-    
-    func serchUserComponents(q: String) -> URLComponents {
-        var result = GitHubUserAPI.basicComponents
-        result.queryItems = [URLQueryItem(name: "q", value: q)]
-        
-        return result
-    }
 }
+
+
