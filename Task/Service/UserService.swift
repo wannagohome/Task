@@ -13,6 +13,7 @@ import RxAlamofire
 
 protocol UserServiceProtocol {
     func searchUser(keyword: String, page: Int) -> Observable<Result<SearchResult>>
+    func repoCount(with url: URL) -> Observable<Result<Int>>
 }
 
 final class UserService: UserServiceProtocol {
@@ -35,6 +36,19 @@ final class UserService: UserServiceProtocol {
                         result.isNotLastPage = link.contains("next")
                     }
                     return .success(result)
+                } catch {
+                    return .failure(NetworkError.castingError)
+                }
+        }
+    }
+    
+    func repoCount(with url: URL) -> Observable<Result<Int>> {
+        return SessionManager.default.rx.request(.get, url)
+            .data()
+            .map { data in
+                do {
+                    let user = try JSONDecoder().decode(User.self, from: data)
+                    return .success(user.publicRepos ?? 0)
                 } catch {
                     return .failure(NetworkError.castingError)
                 }

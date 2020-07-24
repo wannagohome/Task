@@ -28,13 +28,12 @@ final class UserServiceTests: XCTestCase {
         
         self.scheduler.createColdObservable([.next(0, ("abc", 1))])
             .flatMapLatest(self.service.searchUser)
-            .map { result -> SearchResult? in
+            .compactMap { result -> SearchResult? in
                 guard case .success(let value) = result else {
                     return nil
                 }
                 return value
         }
-        .filterNil()
         .bind(to: result)
         .disposed(by: disposeBag)
         
@@ -48,5 +47,20 @@ final class UserServiceTests: XCTestCase {
         let expectedParameters = 1
         let actualParameters = self.service.parameter?.page
         XCTAssertEqual(actualParameters, expectedParameters)
+    }
+    
+    func testRepoCount() {
+        let count = scheduler.createObserver(Int.self)
+        
+        self.scheduler.createColdObservable([.next(0, URL(string: "HelloWorld")!)])
+            .flatMapLatest(self.service.repoCount(with:))
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
+            .bind(to: count)
+            .disposed(by: disposeBag)
+            
+        self.scheduler.start()
+        
+        XCTAssertEqual(count.events, [.next(0, 10)])
     }
 }

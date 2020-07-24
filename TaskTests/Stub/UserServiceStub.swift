@@ -21,6 +21,9 @@ final class UserServiceStub: UserServiceProtocol {
         } catch {
             return .just(.failure(NetworkError.castingError))
         }
-        
+    }
+    
+    func repoCount(with url: URL) -> Observable<Result<Int>> {
+        return .just(.success(10))
     }
 }
