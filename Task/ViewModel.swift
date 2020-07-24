@@ -17,9 +17,11 @@ class ViewModel: ViewBindable {
     // input
     var searchText = PublishSubject<String>()
     var loadNext = PublishSubject<Void>()
+    var loadRepoCount = PublishSubject<URL>()
     
     // output
     var cellData: Driver<[UserList]>
+    var repoCount: Driver<Int>
     
     // state
     var userSearchResult: Observable<SearchResult>
@@ -33,13 +35,8 @@ class ViewModel: ViewBindable {
         self.userSearchResult = self.searchText
             .map { ($0, 1) }
             .flatMapLatest(userService.searchUser)
-            .map { result -> SearchResult? in
-                guard case .success(let value) = result else {
-                    return nil
-                }
-                return value
-        }
-        .filterNil()
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
         
         self.searchText
             .map { _ in 1 }
@@ -56,20 +53,14 @@ class ViewModel: ViewBindable {
             ))
             .map { ($0, $1 + 1) }
             .flatMapLatest(userService.searchUser)
-                .map { result -> SearchResult? in
-                    guard case .success(let value) = result else {
-                        return nil
-                    }
-                    return value
-            }
-            .filterNil()
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
         
         Observable.merge(
             self.userSearchResult,
             self.fetchedSearchResult
         )
-            .map { $0.isNotLastPage }
-            .filterNil()
+            .compactMap { $0.isNotLastPage }
             .bind(to: self.isNotLastPage)
             .disposed(by: disposeBag)
         
@@ -81,16 +72,20 @@ class ViewModel: ViewBindable {
         
         self.cellData = Observable.merge(
             self.userSearchResult
-                .map{ $0.items }
-                .filterNil(),
+                .compactMap{ $0.items },
             self.fetchedSearchResult
-                .map{ $0.items }
-                .filterNil()
+                .compactMap{ $0.items }
         )
             .scan([]){ prev, new in
                 return new.isEmpty ? [] : prev + new
         }
         .asDriver(onErrorDriveWith: .empty())
+        
+        self.repoCount = self.loadRepoCount
+            .flatMapLatest(userService.repoCount)
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
+            .asDriver(onErrorDriveWith: .empty())
     }
 }
 

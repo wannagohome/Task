@@ -152,4 +152,19 @@ final class ViewModelTests: XCTestCase {
                                       .next(30, 90),
                                       .next(40, 120)])
     }
+    
+    func testRepoCount_loadCount() {
+        let count = scheduler.createObserver(Int.self)
+        
+        self.scheduler.createColdObservable([.next(0, URL(string: "HelloWorld")!)])
+            .flatMapLatest(self.service.repoCount(with:))
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
+            .bind(to: count)
+            .disposed(by: disposeBag)
+            
+        self.scheduler.start()
+        
+        XCTAssertEqual(count.events, [.next(0, 10)])
+    }
 }

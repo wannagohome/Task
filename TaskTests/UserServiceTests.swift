@@ -61,6 +61,6 @@ final class UserServiceTests: XCTestCase {
             
         self.scheduler.start()
         
-        XCTAssertEqual(count.events, [.next(0, 10)])
+        XCTAssertEqual(URL(string: "HelloWorld")!, self.service.parameter?.url)
     }
 }

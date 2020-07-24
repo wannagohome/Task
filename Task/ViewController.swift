@@ -15,8 +15,10 @@ import SnapKit
 protocol ViewBindable {
     var searchText: PublishSubject<String> { get }
     var loadNext: PublishSubject<Void> { get }
+    var loadRepoCount: PublishSubject<URL> { get }
     
     var cellData: Driver<[UserList]> { get }
+    var repoCount: Driver<Int> { get }
 }
 
 class ViewController: UIViewController {

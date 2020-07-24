@@ -11,10 +11,10 @@ import Alamofire
 @testable import Task
 
 final class UserServiceStub: UserServiceProtocol {
-    var parameter: (keyword: String, page: Int)?
+    var parameter: (keyword: String?, page: Int?, url: URL?)?
     
     func searchUser(keyword: String, page: Int) -> Observable<Result<SearchResult>> {
-        self.parameter = (keyword, page)
+        self.parameter = (keyword, page, nil)
         do {
             let result = try JSONDecoder().decode(SearchResult.self, from: SampleData.SearchUserResult.data(using: .utf8)!)
             return .just(.success(result))
@@ -24,6 +24,7 @@ final class UserServiceStub: UserServiceProtocol {
     }
     
     func repoCount(with url: URL) -> Observable<Result<Int>> {
+        self.parameter = (nil, nil, url)
         return .just(.success(10))
     }
 }
