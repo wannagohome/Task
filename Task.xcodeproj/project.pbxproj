@@ -127,6 +127,25 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		23FDB56824CB2455009A8C57 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				23FDB56924CB2479009A8C57 /* Components */,
+				AC979B61225C4B2900F37664 /* ViewController.swift */,
+				AC7E0F39225CDB520096364B /* ViewModel.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		23FDB56924CB2479009A8C57 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AC200E262266A420004D9072 /* UserCell.swift */,
+				AC200E282266A448004D9072 /* LoadingCell.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		AC979B53225C4B2900F37664 = {
 			isa = PBXGroup;
 			children = (
@@ -151,14 +170,11 @@
 		AC979B5E225C4B2900F37664 /* Task */ = {
 			isa = PBXGroup;
 			children = (
+				AC979B5F225C4B2900F37664 /* AppDelegate.swift */,
 				235D2B8724CAE47500129C1E /* Models */,
 				D0190EF224C70AE0001FE6D8 /* Service */,
-				AC979B5F225C4B2900F37664 /* AppDelegate.swift */,
+				23FDB56824CB2455009A8C57 /* ViewController */,
 				AC200E242266A109004D9072 /* Extentions.swift */,
-				AC979B61225C4B2900F37664 /* ViewController.swift */,
-				AC7E0F39225CDB520096364B /* ViewModel.swift */,
-				AC200E262266A420004D9072 /* UserCell.swift */,
-				AC200E282266A448004D9072 /* LoadingCell.swift */,
 				AC979B66225C4B2A00F37664 /* Assets.xcassets */,
 				AC979B68225C4B2A00F37664 /* LaunchScreen.storyboard */,
 				AC979B6B225C4B2A00F37664 /* Info.plist */,
