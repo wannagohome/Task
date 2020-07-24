@@ -22,16 +22,18 @@ final class UserService: UserServiceProtocol {
         }
         let parameters: Parameters = ["q": keyword, "page": page]
         
-        return SessionManager.default
-            .rx
-            .request(
-                .get,
-                url,
-                parameters: parameters)
+        return SessionManager.default.rx.request(
+            .get,
+            url,
+            parameters: parameters
+        )
             .responseData()
             .map { response, data in
                 do {
-                    let result = try JSONDecoder().decode(SearchResult.self, from: data)
+                    var result = try JSONDecoder().decode(SearchResult.self, from: data)
+                    if let link = response.allHeaderFields["Link"] as? String {
+                        result.isNotLastPage = link.contains("next")
+                    }
                     return .success(result)
                 } catch {
                     return .failure(NetworkError.castingError)

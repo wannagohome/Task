@@ -12,6 +12,7 @@
 		235D2B8124C9591700129C1E /* UserServiceStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8024C9591700129C1E /* UserServiceStub.swift */; };
 		235D2B8424C9783500129C1E /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8224C9783500129C1E /* API.swift */; };
 		235D2B8924CAE48100129C1E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8824CAE48100129C1E /* User.swift */; };
+		235D2B8B24CAEB3100129C1E /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D2B8A24CAEB3100129C1E /* ViewModelTests.swift */; };
 		2ED2EF46C80961E884288082 /* Pods_Task_TaskTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 310EE9FB581DF7EED0A0D206 /* Pods_Task_TaskTests.framework */; };
 		AC200E252266A109004D9072 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E242266A109004D9072 /* Extentions.swift */; };
 		AC200E272266A420004D9072 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200E262266A420004D9072 /* UserCell.swift */; };
@@ -44,6 +45,7 @@
 		235D2B8024C9591700129C1E /* UserServiceStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceStub.swift; sourceTree = "<group>"; };
 		235D2B8224C9783500129C1E /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		235D2B8824CAE48100129C1E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		235D2B8A24CAEB3100129C1E /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelTests.swift; sourceTree = "<group>"; };
 		310EE9FB581DF7EED0A0D206 /* Pods_Task_TaskTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Task_TaskTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3857D6240B7F7227B73B9530 /* Pods-Task.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Task.release.xcconfig"; path = "Target Support Files/Pods-Task/Pods-Task.release.xcconfig"; sourceTree = "<group>"; };
 		4FC8271022A1A3E294F6AA25 /* Pods_Task.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Task.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -170,6 +172,7 @@
 				2353048F24C82D93009D5971 /* Stub */,
 				D0190EEA24C6FD46001FE6D8 /* UserServiceTests.swift */,
 				2353049424C83716009D5971 /* ViewControllerTests.swift */,
+				235D2B8A24CAEB3100129C1E /* ViewModelTests.swift */,
 				D0190EEC24C6FD46001FE6D8 /* Info.plist */,
 				2353049224C82E96009D5971 /* SampleData.swift */,
 			);
@@ -390,6 +393,7 @@
 			files = (
 				2353049324C82E96009D5971 /* SampleData.swift in Sources */,
 				2353049524C83716009D5971 /* ViewControllerTests.swift in Sources */,
+				235D2B8B24CAEB3100129C1E /* ViewModelTests.swift in Sources */,
 				235D2B8124C9591700129C1E /* UserServiceStub.swift in Sources */,
 				D0190EEB24C6FD46001FE6D8 /* UserServiceTests.swift in Sources */,
 			);

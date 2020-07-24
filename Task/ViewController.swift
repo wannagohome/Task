@@ -63,6 +63,7 @@ class ViewController: UIViewController {
         .disposed(by: disposeBag)
         
         self.tableView.rx.isReachedBottom
+            .debounce(.seconds(1), scheduler: MainScheduler.instance)
             .bind(to: viewModel.loadNext)
             .disposed(by: disposeBag)
     }

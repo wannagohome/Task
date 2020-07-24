@@ -8,6 +8,7 @@ struct SearchResult: Codable {
     var totalCount: Int?
     var incompleteResults: Bool?
     var items: [UserList]?
+    var isNotLastPage: Bool?
 
     enum CodingKeys: String, CodingKey {
         case totalCount = "total_count"
