@@ -13,7 +13,7 @@ struct GitHubUserAPI {
     static let host = "api.github.com"
     static let path = "/search/users"
     
-    static var basicComponents: URLComponents {
+    static var searchUserComponents: URLComponents {
         get {
             var components = URLComponents()
             components.scheme = GitHubUserAPI.scheme
@@ -30,7 +30,7 @@ enum NetworkError: Error {
     case urlError
     case castingError
     
-    var message: String? {
+    var localizedDescription: String? {
         switch self {
         case let .error(message):
             return message
@@ -42,8 +42,4 @@ enum NetworkError: Error {
             return "Network Error"
         }
     }
-}
-
-struct HTTPMethod {
-    static let GET = "GET", POST = "POST", PUT = "PUT", DELETE = "DELETE", PATCH = "PATCH"
 }

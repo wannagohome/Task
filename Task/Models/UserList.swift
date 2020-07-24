@@ -116,8 +116,3 @@ struct UserList: Codable {
 enum Type: String, Codable {
     case user = "User"
 }
-
-struct RepoResult: Codable {
-    var id: Int?
-}
-

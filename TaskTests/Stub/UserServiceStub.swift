@@ -7,23 +7,20 @@
 //
 
 import RxSwift
+import Alamofire
 @testable import Task
 
 final class UserServiceStub: UserServiceProtocol {
-    var parameter: (url: URL?, query:[String: String]?)?
-    let networkManager: NetworkingManagerProtocol
+    var parameter: (keyword: String, page: Int)?
     
-    init(networkManager: NetworkingManagerProtocol
-        = NetworkManagerStub()) {
-        self.networkManager = networkManager
-    }
-    
-    func searchUser(q: String) -> Observable<Result<SearchResult, NetworkError>> {
-                guard let url = serchUserComponents(q: q).url else {
-            let error = NetworkError.urlError
-            return .just(.failure(error))
+    func searchUser(keyword: String, page: Int) -> Observable<Result<SearchResult>> {
+        self.parameter = (keyword, page)
+        do {
+            let result = try JSONDecoder().decode(SearchResult.self, from: SampleData.SearchUserResult.data(using: .utf8)!)
+            return .just(.success(result))
+        } catch {
+            return .just(.failure(NetworkError.castingError))
         }
-        self.parameter = (url, url.queryParameters)
-        return networkManager.request(URLRequest(url: url))
+        
     }
 }

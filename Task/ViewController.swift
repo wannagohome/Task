@@ -14,8 +14,9 @@ import SnapKit
 
 protocol ViewBindable {
     var searchText: PublishSubject<String> { get }
+    var loadNext: PublishSubject<Void> { get }
     
-    var cellData: Driver<[User]> { get }
+    var cellData: Driver<[UserList]> { get }
 }
 
 class ViewController: UIViewController {
@@ -47,7 +48,7 @@ class ViewController: UIViewController {
     //MARK: - Bind
     private func bind(viewModel: ViewBindable) {
         self.searchController.searchBar.rx.text.orEmpty
-            .debounce(0.5, scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(5), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filterEmpty()
             .bind(to: viewModel.searchText)
@@ -60,6 +61,10 @@ class ViewController: UIViewController {
                 return cell
         }
         .disposed(by: disposeBag)
+        
+        self.tableView.rx.isReachedBottom
+            .bind(to: viewModel.loadNext)
+            .disposed(by: disposeBag)
     }
     
     private func layout() {
@@ -76,4 +81,16 @@ class ViewController: UIViewController {
             $0.register(UserCell.self, forCellReuseIdentifier: UserCell.description())
         }
     }
+}
+
+extension Reactive where Base: UIScrollView {
+  var isReachedBottom: ControlEvent<Void> {
+    let source = self.contentOffset
+      .filter { [weak base = self.base] offset in
+        guard let base = base else { return false }
+        return base.contentOffset.y + 1 >= (base.contentSize.height - base.frame.size.height)
+      }
+      .map { _ in Void() }
+    return ControlEvent(events: source)
+  }
 }

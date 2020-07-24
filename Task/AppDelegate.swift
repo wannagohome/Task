@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = ViewController(viewModel: ViewModel(userService: UserService(networkManager: NetworkingManager())))
+        window?.rootViewController = ViewController(viewModel: ViewModel(userService: UserService()))
         return true
     }
 

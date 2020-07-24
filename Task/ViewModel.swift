@@ -14,17 +14,19 @@ class ViewModel: ViewBindable {
     let userService: UserServiceProtocol
     
     var searchText = PublishSubject<String>()
+    var loadNext = PublishSubject<Void>()
     
-    var cellData: Driver<[User]>
+    var cellData: Driver<[UserList]>
     
-    var searchResult: Observable<[User]>
+    var userSearchResult: Observable<[UserList]>
     
     init(userService: UserServiceProtocol) {
         self.userService = userService
         
-        self.searchResult = searchText
-            .flatMapLatest(userService.searchUser(q:))
-            .map { result -> [User]? in
+        self.userSearchResult = searchText
+            .map { ($0, 1) }
+            .flatMapLatest(userService.searchUser)
+            .map { result -> [UserList]? in
                 guard case .success(let value) = result else {
                     return nil
                 }
@@ -32,10 +34,8 @@ class ViewModel: ViewBindable {
         }
         .filterNil()
         
-        
-        self.cellData = searchResult
+        self.cellData = userSearchResult
             .asDriver(onErrorDriveWith: .empty())
     }
 }
-
 

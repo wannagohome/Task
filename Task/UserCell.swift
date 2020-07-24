@@ -8,7 +8,7 @@
 
 import UIKit
 import Kingfisher
-
+import Alamofire
 
 class UserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -25,7 +25,7 @@ class UserCell: UITableViewCell {
         profile.layer.cornerRadius = profile.bounds.height / 2
     }
     
-    func setData(_ data: User) {
+    func setData(_ data: UserList) {
         userName.text = data.login
         
         if let profileURLString = data.avatarURL,

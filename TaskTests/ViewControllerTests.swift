@@ -31,13 +31,13 @@ final class ViewControllerTests: XCTestCase {
     
     func testSearchBar_whenSearchBarTextTyped_searchWithText() {
         let searchText = scheduler.createObserver(String.self)
-        let result = scheduler.createObserver([User].self)
+        let result = scheduler.createObserver([UserList].self)
         
         self.viewModel.searchText
             .bind(to: searchText)
             .disposed(by: disposeBag)
         
-        self.viewModel.searchResult
+        self.viewModel.userSearchResult
             .bind(to: result)
             .disposed(by: disposeBag)
         
@@ -48,5 +48,22 @@ final class ViewControllerTests: XCTestCase {
         self.scheduler.start()
         
         XCTAssertNotNil(result.events)
+    }
+    
+    func testTableView_whenTableviewScrollBottom_loadNextPage() {
+        let loadNext = scheduler.createObserver(Void.self)
+        viewController.tableView.contentSize.height = 300
+        
+        self.viewModel.loadNext
+            .bind(to: loadNext)
+            .disposed(by: disposeBag)
+        
+        self.scheduler.createColdObservable([.next(30, CGPoint(x: 0, y: 300))])
+            .bind(to: self.viewController.tableView.rx.contentOffset)
+            .disposed(by: disposeBag)
+        
+        self.scheduler.start()
+        
+        XCTAssertTrue(loadNext.events.isNotEmpty)
     }
 }

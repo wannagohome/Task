@@ -7,35 +7,35 @@
 //
 
 import RxSwift
+import Alamofire
+import RxAlamofire
+
 
 protocol UserServiceProtocol {
-    func searchUser(q: String) -> Observable<Result<SearchResult, NetworkError>>
-}
-
-extension UserServiceProtocol {
-    func serchUserComponents(q: String) -> URLComponents {
-        var result = GitHubUserAPI.basicComponents
-        result.queryItems = [URLQueryItem(name: "q", value: q)]
-        
-        return result
-    }
+    func searchUser(keyword: String, page: Int) -> Observable<Result<SearchResult>>
 }
 
 final class UserService: UserServiceProtocol {
-    let networkManager: NetworkingManagerProtocol
-    
-    init(networkManager: NetworkingManagerProtocol) {
-        self.networkManager = networkManager
-    }
-    
-    @discardableResult
-    func searchUser(q: String) -> Observable<Result<SearchResult, NetworkError>> {
-        guard let url = serchUserComponents(q: q).url else {
-            let error = NetworkError.urlError
-            return .just(.failure(error))
+    func searchUser(keyword: String, page: Int = 1) -> Observable<Result<SearchResult>> {
+        guard let url = GitHubUserAPI.searchUserComponents.url else {
+            return .just(.failure(NetworkError.urlError))
         }
-        return networkManager.request(URLRequest(url: url))
+        let parameters: Parameters = ["q": keyword, "page": page]
+        
+        return SessionManager.default
+            .rx
+            .request(
+                .get,
+                url,
+                parameters: parameters)
+            .responseData()
+            .map { response, data in
+                do {
+                    let result = try JSONDecoder().decode(SearchResult.self, from: data)
+                    return .success(result)
+                } catch {
+                    return .failure(NetworkError.castingError)
+                }
+        }
     }
 }
-
-
