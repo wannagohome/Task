@@ -20,7 +20,7 @@ class ViewModel: ViewBindable {
     var loadRepoCount = PublishSubject<URL>()
     
     // output
-    var cellData: Driver<[UserList]>
+    var cellData: Driver<[(type: ViewModel.CellType, value: UserList?)]>
     var repoCount: Driver<Int>
     
     // state
@@ -79,6 +79,16 @@ class ViewModel: ViewBindable {
             .scan([]){ prev, new in
                 return new.isEmpty ? [] : prev + new
         }
+        .withLatestFrom(self.isNotLastPage) { ($0, $1)}
+        .map { list, isNotLast -> [(type: ViewModel.CellType, value: UserList?)] in
+            var result: [(type: ViewModel.CellType, value: UserList?)] = list.map { (type: CellType.user, value: $0) }
+            if isNotLast {
+                result.append((type: .loading, value: nil))
+                return result
+            } else {
+                return result
+            }
+        }
         .asDriver(onErrorDriveWith: .empty())
         
         self.repoCount = self.loadRepoCount
@@ -86,6 +96,12 @@ class ViewModel: ViewBindable {
             .filter { $0.isSuccess }
             .compactMap { $0.value }
             .asDriver(onErrorDriveWith: .empty())
+    }
+    
+    
+    enum CellType {
+        case user
+        case loading
     }
 }
 

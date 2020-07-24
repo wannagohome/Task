@@ -147,10 +147,10 @@ final class ViewModelTests: XCTestCase {
         
         self.scheduler.start()
         
-        XCTAssertEqual(count.events, [.next(10, 30),
-                                      .next(20, 60),
-                                      .next(30, 90),
-                                      .next(40, 120)])
+        XCTAssertEqual(count.events, [.next(10, 31),
+                                      .next(20, 61),
+                                      .next(30, 91),
+                                      .next(40, 121)])
     }
     
     func testRepoCount_loadCount() {

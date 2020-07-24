@@ -8,11 +8,11 @@ target 'Task' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxOptional'
-  pod 'RxBlocking'
-  pod 'RxTest'
   pod 'Then'
   pod 'SnapKit'
 
   target 'TaskTests' do
+    pod 'RxBlocking'
+    pod 'RxTest'
   end
 end

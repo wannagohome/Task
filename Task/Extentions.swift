@@ -7,68 +7,18 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 
-extension UIScrollView {
-    func  isNearBottomEdge(_ edgeOffset: CGFloat = 20.0) -> Bool {
-        return self.contentOffset.y + self.frame.size.height + edgeOffset > self.contentSize.height
-    }
-}
-
-extension UIView {
-    func fillSuperview() {
-        anchor(top: superview?.safeAreaLayoutGuide.topAnchor, leading: superview?.leadingAnchor, bottom: superview?.safeAreaLayoutGuide.bottomAnchor, trailing: superview?.trailingAnchor)
-    }
-    
-    func anchorSize(to view: UIView) {
-        widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-    }
-    
-    func anchor(top: NSLayoutYAxisAnchor?, leading: NSLayoutXAxisAnchor?, bottom: NSLayoutYAxisAnchor?, trailing: NSLayoutXAxisAnchor?, padding: UIEdgeInsets = .zero, size: CGSize = .zero) {
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        if let top = top {
-            topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
-        }
-        
-        if let leading = leading {
-            leadingAnchor.constraint(equalTo: leading, constant: padding.left).isActive = true
-        }
-        
-        if let bottom = bottom {
-            bottomAnchor.constraint(equalTo: bottom, constant: -padding.bottom).isActive = true
-        }
-        
-        if let trailing = trailing {
-            trailingAnchor.constraint(equalTo: trailing, constant: -padding.right).isActive = true
-        }
-        
-        if size.width != 0 {
-            widthAnchor.constraint(equalToConstant: size.width).isActive = true
-        }
-        
-        if size.height != 0 {
-            heightAnchor.constraint(equalToConstant: size.height).isActive = true
-        }
-    }
-}
-
-extension String {
-    var isAlphanumeric: Bool {
-        return !isEmpty && range(of: "[^a-zA-Z0-9]", options: .regularExpression) == nil
-    }
-}
-
-
-extension UIViewController {
-    func showAlert(message: String) {
-        DispatchQueue.main.async {
-            let alertMessage = UIAlertController(title: "", message: message, preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "확인", style: .cancel)
-            
-            alertMessage.addAction(cancelAction)
-            self.present(alertMessage, animated: true, completion: nil)
-        }
-    }
+extension Reactive where Base: UIScrollView {
+  var isReachedBottom: ControlEvent<Void> {
+    let source = self.contentOffset
+      .filter { [weak base = self.base] offset in
+        guard let base = base else { return false }
+        return base.contentOffset.y + 1 >= (base.contentSize.height - base.frame.size.height)
+      }
+      .map { _ in Void() }
+    return ControlEvent(events: source)
+  }
 }

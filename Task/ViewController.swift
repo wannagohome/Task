@@ -17,7 +17,7 @@ protocol ViewBindable {
     var loadNext: PublishSubject<Void> { get }
     var loadRepoCount: PublishSubject<URL> { get }
     
-    var cellData: Driver<[UserList]> { get }
+    var cellData: Driver<[(type: ViewModel.CellType, value: UserList?)]> { get }
     var repoCount: Driver<Int> { get }
 }
 
@@ -58,9 +58,16 @@ class ViewController: UIViewController {
         
         viewModel.cellData
             .drive(tableView.rx.items) { tb, row, data in
-                let cell = tb.dequeueReusableCell(withIdentifier: UserCell.description(), for: IndexPath(row: row, section: 0)) as! UserCell
-                cell.setData(data)
-                return cell
+                if data.type == .user {
+                    let cell = tb.dequeueReusableCell(withIdentifier: UserCell.description(), for: IndexPath(row: row, section: 0)) as! UserCell
+                    cell.setData(data.value!)
+                    return cell
+                } else {
+                    let cell = tb.dequeueReusableCell(withIdentifier: LoadingCell.description(), for: IndexPath(row: row, section: 0)) as! LoadingCell
+                    cell.indicatorView.startAnimating()
+                    return cell
+                }
+                
         }
         .disposed(by: disposeBag)
         
@@ -82,18 +89,8 @@ class ViewController: UIViewController {
             $0.rowHeight = 60
             $0.tableHeaderView = searchController.searchBar
             $0.register(UserCell.self, forCellReuseIdentifier: UserCell.description())
+            $0.register(LoadingCell.self, forCellReuseIdentifier: LoadingCell.description())
         }
     }
 }
 
-extension Reactive where Base: UIScrollView {
-  var isReachedBottom: ControlEvent<Void> {
-    let source = self.contentOffset
-      .filter { [weak base = self.base] offset in
-        guard let base = base else { return false }
-        return base.contentOffset.y + 1 >= (base.contentSize.height - base.frame.size.height)
-      }
-      .map { _ in Void() }
-    return ControlEvent(events: source)
-  }
-}

@@ -15,7 +15,9 @@ class LoadingCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         addSubview(indicatorView)
-        indicatorView.fillSuperview()
+        indicatorView.snp.makeConstraints { m in
+            m.edges.equalToSuperview()
+        }
         
     }
     
