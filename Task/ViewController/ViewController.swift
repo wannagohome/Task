@@ -18,7 +18,6 @@ protocol ViewBindable {
     var loadRepoCount: PublishSubject<URL> { get }
     
     var cellData: Driver<[(type: ViewModel.CellType, value: UserList?)]> { get }
-//    var repoCount: Driver<Int> { get }
 }
 
 class ViewController: UIViewController {

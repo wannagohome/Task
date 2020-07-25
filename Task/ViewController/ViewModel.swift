@@ -21,7 +21,6 @@ class ViewModel: ViewBindable {
     
     // output
     var cellData: Driver<[(type: ViewModel.CellType, value: UserList?)]>
-//    var repoCount: Driver<Int>
     
     // state
     var userSearchResult: Observable<SearchResult>
@@ -38,12 +37,33 @@ class ViewModel: ViewBindable {
             .filter { $0.isSuccess }
             .compactMap { $0.value }
         
+        self.userSearchResult = userSearchResultTemp
+            .compactMap { $0.items }
+            .flatMap { Observable.from($0) }
+            .concatMap(userService.repoCount)
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
+            .map { [$0] }
+            .scan([]){ prev, new -> [UserList] in
+                if prev.count == 30 {
+                    return new
+                } else {
+                    return prev + new
+                }
+        }
+        .filter { $0.count == 30 }
+        .withLatestFrom(userSearchResultTemp) {
+            var result = $1
+            result.items = $0
+            return result
+        }
+        
         self.searchText
             .map { _ in 1 }
             .bind(to: self.page)
             .disposed(by: disposeBag)
         
-        self.fetchedSearchResult = self.loadNext
+        let fetchedSearchResultTemp = self.loadNext
             .withLatestFrom(self.isNotLastPage)
             .filter { $0 }
             .withLatestFrom(
@@ -56,27 +76,26 @@ class ViewModel: ViewBindable {
             .filter { $0.isSuccess }
             .compactMap { $0.value }
         
-        self.userSearchResult = userSearchResultTemp
-//            .compactMap { $0.items }
-//            .flatMap { Observable.from($0) }
-//            .concatMap(userService.repoCount)
-//            .filter { $0.isSuccess }
-//            .compactMap { $0.value }
-//            .map { [$0] }
-//            .scan([]){ prev, new -> [UserList] in
-//                if prev.count == 30 {
-//                    return new
-//                } else {
-//                    return prev + new
-//                }
-//        }
-//        .filter { $0.count == 30 }
-//        .withLatestFrom(userSearchResultTemp) {
-//            var result = $1
-//            result.items = $0
-//            return result
-//        }
-        
+        self.fetchedSearchResult = fetchedSearchResultTemp
+            .compactMap { $0.items }
+            .flatMap { Observable.from($0) }
+            .concatMap(userService.repoCount)
+            .filter { $0.isSuccess }
+            .compactMap { $0.value }
+            .map { [$0] }
+            .scan([]){ prev, new -> [UserList] in
+                if prev.count == 30 {
+                    return new
+                } else {
+                    return prev + new
+                }
+        }
+        .filter { $0.count == 30 }
+        .withLatestFrom(fetchedSearchResultTemp) {
+            var result = $1
+            result.items = $0
+            return result
+        }
         
         Observable.merge(
             self.userSearchResult,
@@ -112,11 +131,6 @@ class ViewModel: ViewBindable {
         }
         .asDriver(onErrorDriveWith: .empty())
         
-//        self.repoCount = self.loadRepoCount
-//            .concatMap(userService.repoCount)
-//            .filter { $0.isSuccess }
-//            .compactMap { $0.value }
-//            .asDriver(onErrorDriveWith: .empty())
     }
     
     
