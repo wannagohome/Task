@@ -13,7 +13,7 @@ import RxAlamofire
 
 protocol UserServiceProtocol {
     func searchUser(keyword: String, page: Int) -> Observable<Result<SearchResult>>
-    func repoCount(with url: URL) -> Observable<Result<Int>>
+    func repoCount(with user: UserList) -> Observable<Result<UserList>>
 }
 
 final class UserService: UserServiceProtocol {
@@ -34,6 +34,7 @@ final class UserService: UserServiceProtocol {
                     var result = try JSONDecoder().decode(SearchResult.self, from: data)
                     if let link = response.allHeaderFields["Link"] as? String {
                         result.isNotLastPage = link.contains("next")
+                        result.isFirstPage = (page == 1)
                     }
                     return .success(result)
                 } catch {
@@ -42,13 +43,22 @@ final class UserService: UserServiceProtocol {
         }
     }
     
-    func repoCount(with url: URL) -> Observable<Result<Int>> {
+    func repoCount(with user: UserList) -> Observable<Result<UserList>> {
+        guard let urlString = user.url,
+            let url = URL(string: urlString) else {
+                return .just(.failure(NetworkError.urlError))
+        }
+        var user = user
         return SessionManager.default.rx.request(.get, url)
-            .data()
-            .map { data in
+            .responseData()
+            .map { response, data in
+                if response.statusCode != 200 {
+                    return .failure(NetworkError.defaultError)
+                }
                 do {
-                    let user = try JSONDecoder().decode(User.self, from: data)
-                    return .success(user.publicRepos ?? 0)
+                    let result = try JSONDecoder().decode(User.self, from: data)
+                    user.repoCount = result.publicRepos
+                    return .success(user)
                 } catch {
                     return .failure(NetworkError.castingError)
                 }

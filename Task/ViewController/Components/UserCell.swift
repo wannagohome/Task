@@ -28,6 +28,9 @@ class UserCell: UITableViewCell {
     func setData(_ data: UserList) {
         userName.text = data.login
         
+        if let repoCount = data.repoCount {
+            repos.text = "Number of repose: \(repoCount)"
+        }
         if let profileURLString = data.avatarURL,
             let profileURL = URL(string: profileURLString) {
             profile.kf.setImage(with: profileURL)

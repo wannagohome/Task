@@ -34,3 +34,5 @@ DerivedData/
 .build/
 Pods/
  *.xcworkspace
+
+.DS_Store

@@ -22,9 +22,9 @@ final class UserServiceStub: UserServiceProtocol {
             return .just(.failure(NetworkError.castingError))
         }
     }
-    
-    func repoCount(with url: URL) -> Observable<Result<Int>> {
-        self.parameter = (nil, nil, url)
-        return .just(.success(10))
+    func repoCount(with user: UserList) -> Observable<Result<UserList>> {
+        var user = user
+        user.repoCount = 10
+        return .just(.success(user))
     }
 }

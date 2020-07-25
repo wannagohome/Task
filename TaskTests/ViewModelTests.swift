@@ -154,17 +154,20 @@ final class ViewModelTests: XCTestCase {
     }
     
     func testRepoCount_loadCount() {
-        let count = scheduler.createObserver(Int.self)
+        let count = scheduler.createObserver([Int].self)
         
-        self.scheduler.createColdObservable([.next(0, URL(string: "HelloWorld")!)])
-            .flatMapLatest(self.service.repoCount(with:))
-            .filter { $0.isSuccess }
-            .compactMap { $0.value }
+        self.viewModel.userSearchResult
+            .compactMap { $0.items }
+            .map { $0.compactMap { $0.repoCount } }
             .bind(to: count)
+            .disposed(by: disposeBag)
+        
+        self.scheduler.createColdObservable([.next(0, "a")])
+            .bind(to: self.viewModel.searchText)
             .disposed(by: disposeBag)
             
         self.scheduler.start()
         
-        XCTAssertEqual(count.events, [.next(0, 10)])
+        XCTAssertEqual(count.events.first?.value.element?.count, 30)
     }
 }

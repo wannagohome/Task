@@ -50,10 +50,12 @@ final class UserServiceTests: XCTestCase {
     }
     
     func testRepoCount() {
-        let count = scheduler.createObserver(Int.self)
+        let count = scheduler.createObserver(UserList.self)
+        let userList = try! JSONDecoder().decode(SearchResult.self, from: SampleData.SearchUserResult.data(using: .utf8)!)
         
-        self.scheduler.createColdObservable([.next(0, URL(string: "HelloWorld")!)])
-            .flatMapLatest(self.service.repoCount(with:))
+        self.scheduler.createColdObservable([.next(0, userList)])
+            .compactMap { $0.items?.first }
+            .flatMapLatest(self.service.repoCount)
             .filter { $0.isSuccess }
             .compactMap { $0.value }
             .bind(to: count)
@@ -61,6 +63,6 @@ final class UserServiceTests: XCTestCase {
             
         self.scheduler.start()
         
-        XCTAssertEqual(URL(string: "HelloWorld")!, self.service.parameter?.url)
+        XCTAssertEqual(count.events.first?.value.element?.repoCount, 10)
     }
 }

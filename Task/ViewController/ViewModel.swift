@@ -21,7 +21,7 @@ class ViewModel: ViewBindable {
     
     // output
     var cellData: Driver<[(type: ViewModel.CellType, value: UserList?)]>
-    var repoCount: Driver<Int>
+//    var repoCount: Driver<Int>
     
     // state
     var userSearchResult: Observable<SearchResult>
@@ -32,7 +32,7 @@ class ViewModel: ViewBindable {
     init(userService: UserServiceProtocol) {
         self.userService = userService
         
-        self.userSearchResult = self.searchText
+        let userSearchResultTemp = self.searchText
             .map { ($0, 1) }
             .flatMapLatest(userService.searchUser)
             .filter { $0.isSuccess }
@@ -56,6 +56,28 @@ class ViewModel: ViewBindable {
             .filter { $0.isSuccess }
             .compactMap { $0.value }
         
+        self.userSearchResult = userSearchResultTemp
+//            .compactMap { $0.items }
+//            .flatMap { Observable.from($0) }
+//            .concatMap(userService.repoCount)
+//            .filter { $0.isSuccess }
+//            .compactMap { $0.value }
+//            .map { [$0] }
+//            .scan([]){ prev, new -> [UserList] in
+//                if prev.count == 30 {
+//                    return new
+//                } else {
+//                    return prev + new
+//                }
+//        }
+//        .filter { $0.count == 30 }
+//        .withLatestFrom(userSearchResultTemp) {
+//            var result = $1
+//            result.items = $0
+//            return result
+//        }
+        
+        
         Observable.merge(
             self.userSearchResult,
             self.fetchedSearchResult
@@ -71,13 +93,12 @@ class ViewModel: ViewBindable {
             .disposed(by: disposeBag)
         
         self.cellData = Observable.merge(
-            self.userSearchResult
-                .compactMap{ $0.items },
+            self.userSearchResult,
             self.fetchedSearchResult
-                .compactMap{ $0.items }
         )
-            .scan([]){ prev, new in
-                return new.isEmpty ? [] : prev + new
+            .scan([]) { (prev, new) -> [UserList] in
+                if new.isFirstPage { return new.items ?? [] }
+                else { return prev + (new.items ?? []) }
         }
         .withLatestFrom(self.isNotLastPage) { ($0, $1)}
         .map { list, isNotLast -> [(type: ViewModel.CellType, value: UserList?)] in
@@ -91,11 +112,11 @@ class ViewModel: ViewBindable {
         }
         .asDriver(onErrorDriveWith: .empty())
         
-        self.repoCount = self.loadRepoCount
-            .flatMapLatest(userService.repoCount)
-            .filter { $0.isSuccess }
-            .compactMap { $0.value }
-            .asDriver(onErrorDriveWith: .empty())
+//        self.repoCount = self.loadRepoCount
+//            .concatMap(userService.repoCount)
+//            .filter { $0.isSuccess }
+//            .compactMap { $0.value }
+//            .asDriver(onErrorDriveWith: .empty())
     }
     
     

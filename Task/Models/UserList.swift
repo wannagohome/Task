@@ -9,6 +9,7 @@ struct SearchResult: Codable {
     var incompleteResults: Bool?
     var items: [UserList]?
     var isNotLastPage: Bool?
+    var isFirstPage: Bool = false
 
     enum CodingKeys: String, CodingKey {
         case totalCount = "total_count"
@@ -31,20 +32,9 @@ struct UserList: Codable {
     var type: Type?
     var siteAdmin: Bool?
     var score: Double?
-    var isExpanded: Bool = false
-    var isLoadingCell: Bool = false
     var organizationAvatarUrls: [String] = []
     var repoCount: Int?
 
-    init(_ isLoadingCell: Bool) {
-        self.isLoadingCell = isLoadingCell
-    }
-    
-    mutating func showOrganizationsWithURLs(urls: [String]) {
-        self.organizationAvatarUrls = urls
-        self.isExpanded = true
-    }
-    
 	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
 		avatarURL = try values.decodeIfPresent(String.self, forKey: .avatarURL)
